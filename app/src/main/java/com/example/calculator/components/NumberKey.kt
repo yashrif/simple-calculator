@@ -17,10 +17,13 @@ fun NumberKey(
     modifier: Modifier = Modifier,
     key: String,
     keyColor: Color,
-    keyFontSize: TextUnit = 24.sp
+    keyFontSize: TextUnit = 24.sp,
+    onClick: (String) -> Unit
 ) {
     Button(
-        onClick = {  },
+        onClick = {
+            onClick(key)
+        },
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         shape = CircleShape

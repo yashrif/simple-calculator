@@ -30,17 +30,35 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Interface() {
     val firstNumber = remember {
-        mutableStateOf(0.0)
+        mutableStateOf<Double?>(null)
     }
     val secondNumber = remember {
-        mutableStateOf(0.0)
+        mutableStateOf<Double?>(null)
     }
     val result = remember {
-        mutableStateOf(0.0)
+        mutableStateOf<Double?>(null)
+    }
+    val operator = remember {
+        mutableStateOf<Char?>(null)
+    }
+    val fullExpression = remember {
+        mutableStateOf<String?>(null)
     }
 
-    NumberScreen()
-    NumberPad()
+    NumberScreen(
+        firstNumber = firstNumber.value,
+        secondNumber = secondNumber.value,
+        operator = operator.value,
+        result = fullExpression.value,
+    )
+    NumberPad {
+        if (fullExpression.value == null) fullExpression.value = it else fullExpression.value += it
+        if (fullExpression.value?.get(fullExpression.value!!.length - 1) in '9' downTo '0') {
+            secondNumber.value = firstNumber.value
+            operator.value = fullExpression.value?.get(fullExpression.value!!.length - 1)
+
+        }
+    }
 }
 
 
@@ -48,7 +66,7 @@ fun Interface() {
 fun MyApp(content: @Composable () -> Unit) {
     CalculatorTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            Column() {
+            Column {
                 content()
             }
         }

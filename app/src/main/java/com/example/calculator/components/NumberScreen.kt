@@ -17,7 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun NumberScreen(modifier: Modifier = Modifier) {
+fun NumberScreen(
+    modifier: Modifier = Modifier,
+    firstNumber: Double?,
+    secondNumber: Double?,
+    operator: Char?,
+    result: String?,
+) {
     Surface(Modifier.height(320.dp)) {
         Column(
             modifier = modifier
@@ -27,16 +33,19 @@ fun NumberScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = "32 * 10", color = MaterialTheme.colorScheme.onBackground,
+                text = "${firstNumber ?: " "} ${operator ?: " "} ${secondNumber ?: " "}",
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 28.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                lineHeight = 48.sp
             )
             Spacer(modifier = modifier.height(12.dp))
             Text(
-                text = "320",
+                text = result ?: "",
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 48.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                lineHeight = 48.sp
             )
         }
     }

@@ -13,13 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Preview
 @Composable
-fun NumberPad(modifier: Modifier = Modifier) {
+fun NumberPad(modifier: Modifier = Modifier, onClick: (String) -> Unit) {
     val cyanKeys = Color(0xF500D4BB)
     val orangeKeys = Color(0xFFFF6D00)
     val autoKeys = MaterialTheme.colorScheme.onBackground
@@ -75,7 +73,9 @@ fun NumberPad(modifier: Modifier = Modifier) {
                             key = key.first,
                             keyColor = key.second.first,
                             keyFontSize = key.second.second
-                        )
+                        ) {
+                            onClick(it)
+                        }
                     }
                 }
             }
