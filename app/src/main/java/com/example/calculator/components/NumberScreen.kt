@@ -12,18 +12,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun NumberScreen(
     modifier: Modifier = Modifier,
-    firstNumber: Double?,
-    secondNumber: Double?,
-    operator: Char?,
+    fullExpressionSplit: List<String>,
     result: String?,
 ) {
+    val signs = listOf("+", "-", "%", "x")
+
     Surface(Modifier.height(320.dp)) {
         Column(
             modifier = modifier
@@ -33,7 +37,19 @@ fun NumberScreen(
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = "${firstNumber ?: " "} ${operator ?: " "} ${secondNumber ?: " "}",
+                text = buildAnnotatedString {
+                    fullExpressionSplit.map {
+                        withStyle(
+                            style = SpanStyle(
+                                color = if (!signs.contains(it)) MaterialTheme.colorScheme.onBackground else Color(
+                                    0xFFFF6D00
+                                )
+                            )
+                        ) {
+                            append(it)
+                        }
+                    }
+                },
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold,

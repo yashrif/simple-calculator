@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.calculator.components.NumberPad
 import com.example.calculator.components.NumberScreen
 import com.example.calculator.ui.theme.CalculatorTheme
+import com.example.calculator.utils.calculateResult
+import java.util.StringTokenizer
 
 class MainActivity : ComponentActivity() {
 
@@ -29,35 +32,54 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Interface() {
-    val firstNumber = remember {
-        mutableStateOf<Double?>(null)
-    }
-    val secondNumber = remember {
-        mutableStateOf<Double?>(null)
-    }
+
     val result = remember {
-        mutableStateOf<Double?>(null)
-    }
-    val operator = remember {
-        mutableStateOf<Char?>(null)
+        mutableStateOf<String?>(null)
     }
     val fullExpression = remember {
         mutableStateOf<String?>(null)
     }
+    val fullExpressionSplit = remember {
+        mutableStateListOf<String>()
+    }
 
-    NumberScreen(
-        firstNumber = firstNumber.value,
-        secondNumber = secondNumber.value,
-        operator = operator.value,
-        result = fullExpression.value,
-    )
+    NumberScreen(fullExpressionSplit = fullExpressionSplit, result = result.value)
+
     NumberPad {
-        if (fullExpression.value == null) fullExpression.value = it else fullExpression.value += it
-        if (fullExpression.value?.get(fullExpression.value!!.length - 1) in '9' downTo '0') {
-            secondNumber.value = firstNumber.value
-            operator.value = fullExpression.value?.get(fullExpression.value!!.length - 1)
+//        if (fullExpression.value!!.last() in '0'..'9') {
+//            firstNumber.value =
+//                if (firstNumber.value == null) (fullExpression.value!![fullExpression.value!!.length - 1] - '0').toDouble() else
+//                    (fullExpression.value!![fullExpression.value!!.length - 1] - '0').toDouble() + (firstNumber.value
+//                        ?: 0.0) * 10
+////            Log.d("FirstNumber", "Interface: ${firstNumber.value}")
+//        } else {
+//            secondNumber.value = firstNumber.value
+//            firstNumber.value = null
+//            operator.value = fullExpression.value?.get(fullExpression.value!!.length - 1)
+//        }
+        if (fullExpression.value == null) fullExpression.value = it
+        else
+            when (it.lowercase()) {
+                "c" -> {
+                    fullExpression.value = null
+                    fullExpressionSplit.clear()
+                }
 
-        }
+                "=" -> {
+                    result.value = calculateResult(fullExpression.value!!)
+                }
+
+                else -> {
+                    fullExpression.value += it
+
+                    val tokens = StringTokenizer(fullExpression.value, "-+", true)
+                    fullExpressionSplit.clear()
+                    while (tokens.hasMoreTokens()) {
+                        fullExpressionSplit.add(tokens.nextToken())
+                    }
+                }
+            }
+
     }
 }
 

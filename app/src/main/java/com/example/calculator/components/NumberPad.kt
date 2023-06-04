@@ -24,13 +24,13 @@ fun NumberPad(modifier: Modifier = Modifier, onClick: (String) -> Unit) {
 
     val keys = listOf(
         listOf(
-            Pair("AC", Pair(cyanKeys, 24.sp)),
+            Pair("C", Pair(cyanKeys, 24.sp)),
             Pair("7", Pair(autoKeys, 24.sp)),
             Pair("4", Pair(autoKeys, 24.sp)),
             Pair("1", Pair(autoKeys, 24.sp)),
-            Pair("00", Pair(autoKeys, 24.sp)),
+            Pair((177).toChar().toString(), Pair(cyanKeys, 30.sp))
         ), listOf(
-            Pair((177).toChar().toString(), Pair(cyanKeys, 30.sp)),
+            Pair(("\u2190").toString(), Pair(cyanKeys, 30.sp)),
             Pair("8", Pair(autoKeys, 24.sp)),
             Pair("5", Pair(autoKeys, 24.sp)),
             Pair("2", Pair(autoKeys, 24.sp)),
