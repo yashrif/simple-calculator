@@ -1,6 +1,17 @@
 package com.example.calculator.utils
 
 import android.util.Log
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import java.util.StringTokenizer
 
 fun calculateResult(expression: String): String {
@@ -28,4 +39,41 @@ fun calculateResult(expression: String): String {
         }
     }
     return result.toString()
+}
+
+@Composable
+fun CreateExpressionDisplay(fullExpressionSplit: List<String>) {
+    val signs = listOf("+", "-", "%", "x")
+
+    return Text(
+        text = buildAnnotatedString {
+            fullExpressionSplit.map {
+                withStyle(
+                    style = SpanStyle(
+                        color = if (!signs.contains(it)) MaterialTheme.colorScheme.onBackground else Color(
+                            0xFFFF6D00
+                        )
+                    )
+                ) {
+                    append(it)
+                }
+            }
+        },
+        color = MaterialTheme.colorScheme.onBackground,
+        fontSize = 28.sp,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 48.sp,
+        textAlign = TextAlign.Right
+    )
+}
+
+fun extracted(
+    fullExpression: String?,
+    fullExpressionSplit: SnapshotStateList<String>
+) {
+    val tokens = StringTokenizer(fullExpression, "-+x", true)
+    fullExpressionSplit.clear()
+    while (tokens.hasMoreTokens()) {
+        fullExpressionSplit.add(tokens.nextToken())
+    }
 }

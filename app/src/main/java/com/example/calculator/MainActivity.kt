@@ -1,6 +1,7 @@
 package com.example.calculator
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,7 @@ import com.example.calculator.components.NumberPad
 import com.example.calculator.components.NumberScreen
 import com.example.calculator.ui.theme.CalculatorTheme
 import com.example.calculator.utils.calculateResult
-import java.util.StringTokenizer
+import com.example.calculator.utils.extracted
 
 class MainActivity : ComponentActivity() {
 
@@ -32,9 +33,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Interface() {
-
-    val result = remember {
-        mutableStateOf<String?>(null)
+    val expressions = remember {
+        mutableStateListOf(" ")
     }
     val fullExpression = remember {
         mutableStateOf<String?>(null)
@@ -43,42 +43,33 @@ fun Interface() {
         mutableStateListOf<String>()
     }
 
-    NumberScreen(fullExpressionSplit = fullExpressionSplit, result = result.value)
 
+    NumberScreen(expressions = expressions)
     NumberPad {
-//        if (fullExpression.value!!.last() in '0'..'9') {
-//            firstNumber.value =
-//                if (firstNumber.value == null) (fullExpression.value!![fullExpression.value!!.length - 1] - '0').toDouble() else
-//                    (fullExpression.value!![fullExpression.value!!.length - 1] - '0').toDouble() + (firstNumber.value
-//                        ?: 0.0) * 10
-////            Log.d("FirstNumber", "Interface: ${firstNumber.value}")
-//        } else {
-//            secondNumber.value = firstNumber.value
-//            firstNumber.value = null
-//            operator.value = fullExpression.value?.get(fullExpression.value!!.length - 1)
-//        }
-        if (fullExpression.value == null) fullExpression.value = it
-        else
-            when (it.lowercase()) {
-                "c" -> {
-                    fullExpression.value = null
-                    fullExpressionSplit.clear()
-                }
-
-                "=" -> {
-                    result.value = calculateResult(fullExpression.value!!)
-                }
-
-                else -> {
-                    fullExpression.value += it
-
-                    val tokens = StringTokenizer(fullExpression.value, "-+", true)
-                    fullExpressionSplit.clear()
-                    while (tokens.hasMoreTokens()) {
-                        fullExpressionSplit.add(tokens.nextToken())
-                    }
-                }
+        when (it.lowercase()) {
+            "c" -> {
+                fullExpression.value = null
+                fullExpressionSplit.clear()
             }
+
+            "=" -> {
+                fullExpression.value = calculateResult(fullExpression.value!!)
+                expressions.add(
+                    StringBuilder(fullExpression.value!!).insert(0, '=').toString()
+                )
+                fullExpressionSplit.clear()
+            }
+
+            else -> {
+                if (fullExpression.value == null) fullExpression.value = it
+                else fullExpression.value += it
+
+                extracted(fullExpression.value, fullExpressionSplit)
+                Log.d("Size", "Interface: ${expressions.size}")
+                expressions.removeLast()
+                expressions.add(fullExpression.value!!)
+            }
+        }
 
     }
 }
